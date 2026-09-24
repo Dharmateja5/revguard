@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="RevGuard — Autonomous Revenue Leakage Investigation & Recovery">
+<title>Evaluation &amp; Safety · RevGuard</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<div class="mobile-header"><strong>RevGuard</strong><button class="button" onclick="toggleNav()">Menu</button></div>
+<div class="site-shell">
+
+    <aside class="sidebar">
+      <div class="brand">RevGuard</div>
+      <div class="brand-sub">Autonomous Revenue Leakage Investigation & Recovery</div>
+      <div class="nav-section">Documentation</div>
+      <nav><a class="" href="../index.html">Overview</a><a class="" href="../docs/01_scope.html">Scope</a><a class="" href="../docs/02_prd.html">PRD</a><a class="" href="../docs/03_architecture.html">Architecture</a><a class="active" href="../docs/04_evaluation_safety.html">Evaluation & Safety</a><a class="" href="../docs/05_implementation_plan.html">Implementation Plan</a><a class="" href="../docs/06_demo_submission.html">Demo & Submission</a><a class="" href="../docs/07_evidence_data_spec.html">Evidence & Data</a><a class="" href="../docs/08_architecture_decisions.html">Architecture Decisions</a></nav>
+      <div class="sidebar-footer">Hackathon & portfolio documentation<br>Static site • GitHub Pages ready</div>
+    </aside>
+    
+<div class="content">
+  <div class="topbar">
+    <div class="topbar-title">Evaluation &amp; Safety</div>
+    <div class="topbar-actions">
+      <a class="button" href="../index.html">Overview</a>
+      <button class="button" onclick="printPage()">Print / PDF</button>
+    </div>
+  </div>
+  <main>
+    <h1>Evaluation &amp; Safety</h1><div class="subtitle">Ground truth, metrics, adversarial tests, and safety invariants</div>
+<h2>1. Evaluation Objective</h2>
+<p>Demonstrate that RevGuard is not merely persuasive—it is correct, bounded, auditable, and safe under ambiguity and failure.</p>
+<h2>2. Ground-Truth Case Structure</h2>
+<pre>{
+  case_id,
+  expected_root_cause,
+  expected_leakage_amount,
+  required_evidence_ids[],
+  expected_evidence_status,
+  expected_action,
+  expected_hitl,
+  expected_policy_outcome
+}</pre>
+<h2>3. Core Metrics</h2>
+<table><tr><th>Metric</th><th>Definition</th><th>Illustrative Target</th></tr>
+<tr><td>Root-cause accuracy</td><td>Correct root cause / evaluated cases</td><td>≥ 95%</td></tr>
+<tr><td>Evidence sufficiency precision</td><td>Correct SUFFICIENT determinations / all SUFFICIENT determinations</td><td>≥ 98%</td></tr>
+<tr><td>Financial accuracy</td><td>Exact match to deterministic ground truth</td><td>100%</td></tr>
+<tr><td>Required evidence verification</td><td>Required evidence independently verified before action</td><td>100%</td></tr>
+<tr><td>False-positive auto action</td><td>Auto-executed cases whose GT is No Action/HITL / all auto-executed</td><td>≤ 1%</td></tr>
+<tr><td>HITL recall</td><td>Correctly escalated high-risk/ambiguous cases / all GT high-risk/ambiguous cases</td><td>≥ 99%</td></tr></table>
+<h2>4. Required Adversarial Tests</h2>
+<table><tr><th>Test</th><th>Expected Behavior</th></tr>
+<tr><td>Jev unclassified / unavailable / malformed</td><td>Safe fallback to conservative generative path; audit fallback</td></tr>
+<tr><td>Missing amendment</td><td>Search alternatives; if unresolved, mark insufficient and escalate</td></tr>
+<tr><td>Conflicting amendment</td><td>CONFLICTING_EVIDENCE → HITL</td></tr>
+<tr><td>Unverified citation</td><td>Cannot support financial calculation or auto action</td></tr>
+<tr><td>LLM proposes wrong arithmetic</td><td>Ignored; deterministic engine wins</td></tr>
+<tr><td>Policy violation</td><td>Execution blocked</td></tr>
+<tr><td>Write timeout after request sent</td><td>UNKNOWN_EXECUTION → reconcile before retry</td></tr>
+<tr><td>Duplicate recovery request</td><td>No second financial effect</td></tr>
+<tr><td>Budget exhaustion</td><td>Terminate; route to insufficient/HITL</td></tr>
+<tr><td>Unauthorized tool/action</td><td>Denied and audited</td></tr>
+<tr><td>Audit-row modification</td><td>Hash-chain verification fails</td></tr></table>
+<h2>5. Conversational Evidence Tests (P1)</h2>
+<ul>
+<li>Correct speaker segmentation for controlled synthetic recordings.</li>
+<li>Correct timestamp citation for extracted commercial claim.</li>
+<li>Participant role mapping uses metadata, not guessed identity.</li>
+<li>Verbal concession without formal approval does not become authoritative automatically.</li>
+<li>Conflicting voice and contract evidence routes to HITL when authority is unresolved.</li>
+</ul>
+<h2>6. End-to-End Pass Definition</h2>
+<p>A case passes only when the applicable root cause, evidence status, financial result, policy/HITL outcome, execution behavior, and audit outcome all match ground truth.</p>
+<h2>7. Safety Invariants</h2>
+<ul>
+<li>No unverified evidence may drive a financial action.</li>
+<li>No LLM-generated number is authoritative.</li>
+<li>No agent may override policy or authorization.</li>
+<li>Unknown execution is never blindly retried.</li>
+<li>Missing evidence is not treated as a technical failure.</li>
+<li>Conflict is resolved by evidence and authority, not agent voting.</li>
+<li>Every action and non-action is auditable.</li>
+</ul>
+
+
+    <div class="footer">RevGuard • Static documentation site • Designed for browser viewing and PDF export</div>
+  </main>
+</div>
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>

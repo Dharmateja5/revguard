@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="RevGuard — Autonomous Revenue Leakage Investigation & Recovery">
+<title>Architecture · RevGuard</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<div class="mobile-header"><strong>RevGuard</strong><button class="button" onclick="toggleNav()">Menu</button></div>
+<div class="site-shell">
+
+    <aside class="sidebar">
+      <div class="brand">RevGuard</div>
+      <div class="brand-sub">Autonomous Revenue Leakage Investigation & Recovery</div>
+      <div class="nav-section">Documentation</div>
+      <nav><a class="" href="../index.html">Overview</a><a class="" href="../docs/01_scope.html">Scope</a><a class="" href="../docs/02_prd.html">PRD</a><a class="active" href="../docs/03_architecture.html">Architecture</a><a class="" href="../docs/04_evaluation_safety.html">Evaluation & Safety</a><a class="" href="../docs/05_implementation_plan.html">Implementation Plan</a><a class="" href="../docs/06_demo_submission.html">Demo & Submission</a><a class="" href="../docs/07_evidence_data_spec.html">Evidence & Data</a><a class="" href="../docs/08_architecture_decisions.html">Architecture Decisions</a></nav>
+      <div class="sidebar-footer">Hackathon & portfolio documentation<br>Static site • GitHub Pages ready</div>
+    </aside>
+    
+<div class="content">
+  <div class="topbar">
+    <div class="topbar-title">Architecture</div>
+    <div class="topbar-actions">
+      <a class="button" href="../index.html">Overview</a>
+      <button class="button" onclick="printPage()">Print / PDF</button>
+    </div>
+  </div>
+  <main>
+    <h1>Architecture</h1><div class="subtitle">System boundaries, agents, MCP, controls, state, and execution</div>
+<h2>1. Architectural Principle</h2>
+<div class="callout"><strong>Agents investigate. Deterministic systems decide, authorize, and execute.</strong></div>
+<h2>2. Logical Architecture</h2>
+<pre>
+Trigger
+  ↓
+Jev Decision Layer
+  ↓
+Investigation Coordinator
+  ├─ Contract & Entitlement Agent
+  ├─ Billing Reconciliation Agent
+  └─ Recovery Recommendation Agent
+          ↓
+       Typed MCP
+  ├─ Contract
+  ├─ Usage
+  ├─ Billing
+  ├─ CRM
+  ├─ Recovery
+  └─ Conversation (P1)
+          ↓
+Evidence Verification → Source Authority → Financial Engine
+          ↓
+Policy / Context-Aware Authorization
+          ↓
+HITL | NO_ACTION | Recovery State Machine
+          ↓
+Execution Verification / Reconciliation
+          ↓
+Tamper-Evident Audit
+</pre>
+<h2>3. Decision Layers</h2>
+<table><tr><th>Layer</th><th>Responsibility</th><th>Must Not Do</th></tr>
+<tr><td>Jev</td><td>Structured routing, case classification, path recommendation, fallback signal</td><td>Financial authority or execution</td></tr>
+<tr><td>Generative agents</td><td>Hypotheses, evidence discovery, cross-source reasoning, planning, synthesis</td><td>Authoritative finance, policy override, direct financial writes</td></tr>
+<tr><td>Deterministic control</td><td>Evidence verification, sufficiency, finance, policy, authorization, state, execution, audit</td><td>Probabilistic reasoning</td></tr></table>
+<h2>4. Agent Responsibilities</h2>
+<div class="grid">
+<div class="card"><h3>Coordinator</h3><p>Owns investigation objective, durable state, budgets, agent delegation, evidence gaps, next action, completion and escalation.</p></div>
+<div class="card"><h3>Contract & Entitlement Agent</h3><p>Finds governing contracts, amendments, pricing terms, effective dates, approvals, and entitlement evidence.</p></div>
+<div class="card"><h3>Billing Reconciliation Agent</h3><p>Examines invoices, lines, credits, usage, billing history, telemetry, and discrepancy patterns.</p></div>
+<div class="card"><h3>Recovery Recommendation Agent</h3><p>Combines verified findings into a structured recommendation and evidence package. It cannot execute.</p></div>
+</div>
+<h2>5. Durable Investigation State</h2>
+<pre>{
+  investigation_id,
+  status,
+  known_facts[],
+  open_questions[],
+  hypotheses[],
+  evidence[],
+  actions[],
+  iteration_count,
+  tool_budget,
+  token_budget,
+  next_action,
+  termination_reason
+}</pre>
+<p>Terminal states: <code>COMPLETED</code>, <code>INSUFFICIENT_EVIDENCE</code>, <code>CONFLICTING_EVIDENCE</code>, <code>BUDGET_EXCEEDED</code>, <code>TOOL_FAILURE</code>, <code>HITL_REQUIRED</code>.</p>
+<h2>6. MCP Boundary</h2>
+<table><tr><th>Domain</th><th>Representative Tools</th></tr>
+<tr><td>Contract</td><td>get_master_contract, search_amendments, get_rate_schedule, search_contract_approvals</td></tr>
+<tr><td>Usage</td><td>get_period_telemetry, get_metering_health, verify_raw_usage, get_usage_summary</td></tr>
+<tr><td>Billing</td><td>get_invoice, get_invoice_lines, get_credit_memos, get_billing_history</td></tr>
+<tr><td>CRM</td><td>search_customer_notes, search_approval_records, search_disputes, get_customer_profile</td></tr>
+<tr><td>Recovery</td><td>create_recovery_request, check_recovery_status, verify_recovery</td></tr>
+<tr><td>Conversation (P1)</td><td>search_calls, get_call_metadata, get_call_recording, get_participant_metadata</td></tr></table>
+<h2>7. Evidence Trust Boundary</h2>
+<p>Agents propose claims and evidence references. A deterministic verifier re-retrieves the source/version/snapshot and validates the cited span. The system separately checks whether the source is authoritative for the decision.</p>
+<pre>PROVENANCE: Where did this claim come from?
+AUTHORITY:  Is this source allowed to govern this decision?</pre>
+<h2>8. Financial & Policy Boundary</h2>
+<p>The financial engine uses verified structured inputs only. Example:</p>
+<pre>leakage_amount = round((contracted_rate - billed_rate) * billable_units, 2)</pre>
+<p>Policy then checks evidence sufficiency, verified-only inputs, threshold/cap, scenario allowlist, dispute state, unresolved conflict, and authorization requirements.</p>
+<h2>9. Identity & Authorization</h2>
+<p>Use least privilege. Read-oriented agents should not hold <code>recovery.execute</code> or <code>policy.override</code>. Execution authority belongs to a deterministic recovery service and is contingent on current investigation state, policy outcome, authorization artifact, and idempotency key.</p>
+<h2>10. Recovery State Machine</h2>
+<pre>INVESTIGATION → RECOMMENDATION_READY → POLICY_EVALUATED
+→ HITL | EXECUTION_PENDING | NO_ACTION
+HITL → APPROVED → EXECUTION_PENDING
+EXECUTION_PENDING → EXECUTING
+EXECUTING → EXECUTED | RETRYABLE_FAILURE | UNKNOWN_EXECUTION
+UNKNOWN_EXECUTION → RECONCILIATION
+EXECUTED → VERIFICATION_PENDING → VERIFIED</pre>
+<h2>11. P1 Conversational Evidence Path</h2>
+<pre>Recorded Call → ASR + Diarization → Speaker-attributed transcript
+→ timestamped EvidenceItem → Verification → Authority Check → existing pipeline</pre>
+<p>No separate conversation agent is required for MVP. Participant role mapping should come from controlled metadata, not diarization itself.</p>
+<h2>12. Observability</h2>
+<p>Trace investigation ID, routing decision, tool calls, retries, model/agent spans, latency, tokens, evidence verification, finance result, policy outcome, termination reason, and execution verification. Keep private reasoning out of logs.</p>
+
+
+    <div class="footer">RevGuard • Static documentation site • Designed for browser viewing and PDF export</div>
+  </main>
+</div>
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>

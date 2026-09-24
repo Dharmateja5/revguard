@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="RevGuard — Autonomous Revenue Leakage Investigation & Recovery">
+<title>Implementation Plan · RevGuard</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<div class="mobile-header"><strong>RevGuard</strong><button class="button" onclick="toggleNav()">Menu</button></div>
+<div class="site-shell">
+
+    <aside class="sidebar">
+      <div class="brand">RevGuard</div>
+      <div class="brand-sub">Autonomous Revenue Leakage Investigation & Recovery</div>
+      <div class="nav-section">Documentation</div>
+      <nav><a class="" href="../index.html">Overview</a><a class="" href="../docs/01_scope.html">Scope</a><a class="" href="../docs/02_prd.html">PRD</a><a class="" href="../docs/03_architecture.html">Architecture</a><a class="" href="../docs/04_evaluation_safety.html">Evaluation & Safety</a><a class="active" href="../docs/05_implementation_plan.html">Implementation Plan</a><a class="" href="../docs/06_demo_submission.html">Demo & Submission</a><a class="" href="../docs/07_evidence_data_spec.html">Evidence & Data</a><a class="" href="../docs/08_architecture_decisions.html">Architecture Decisions</a></nav>
+      <div class="sidebar-footer">Hackathon & portfolio documentation<br>Static site • GitHub Pages ready</div>
+    </aside>
+    
+<div class="content">
+  <div class="topbar">
+    <div class="topbar-title">Implementation Plan</div>
+    <div class="topbar-actions">
+      <a class="button" href="../index.html">Overview</a>
+      <button class="button" onclick="printPage()">Print / PDF</button>
+    </div>
+  </div>
+  <main>
+    <h1>Implementation Plan</h1><div class="subtitle">Execution-focused build plan with gates and exit criteria</div>
+<h2>1. Build Strategy</h2>
+<div class="callout good"><strong>Rule:</strong> complete P0 before spending meaningful time on P1 conversational evidence.</div>
+<h2>2. Milestones</h2>
+<table><tr><th>Milestone</th><th>Deliverables</th><th>Exit Criteria</th></tr>
+<tr><td>M1 — Domain Contracts</td><td>Pydantic schemas for InvestigationState, EvidenceItem, EvidencePackage, CaseOutcome, recovery models, enums, tool errors</td><td>Schema tests pass; invalid outputs rejected</td></tr>
+<tr><td>M2 — Deterministic Core</td><td>Evidence verifier, sufficiency logic, financial engine, policy engine, recovery state machine, idempotency, audit hash chain</td><td>Pure deterministic unit tests pass</td></tr>
+<tr><td>M3 — MCP Layer</td><td>Contract, Usage, Billing, CRM, Recovery servers; permission and retry metadata</td><td>Typed calls work; failure semantics verified</td></tr>
+<tr><td>M4 — Jev + Agents</td><td>Jev routing/fallback; Coordinator; Contract, Billing, Recovery Recommendation agents</td><td>Happy-path investigations complete under budget</td></tr>
+<tr><td>M5 — Evaluation</td><td>Ground-truth benchmark, adversarial scenarios, metric runner</td><td>Critical safety cases pass</td></tr>
+<tr><td>M6 — UI / Demo</td><td>Investigation view, evidence panel, policy/HITL view, audit trace</td><td>3-minute demo can be recorded end-to-end</td></tr>
+<tr><td>M7 — P1 Voice</td><td>1–3 recordings, ASR + diarization, timestamped EvidenceItem integration</td><td>Voice evidence joins existing pipeline without new execution path</td></tr></table>
+<h2>3. Recommended Repository Structure</h2>
+<pre>revguard/
+  app/
+  agents/
+  domain/
+  mcp/
+    contract/
+    usage/
+    billing/
+    crm/
+    recovery/
+    conversation/   # P1
+  deterministic/
+    evidence.py
+    finance.py
+    policy.py
+    authorization.py
+    recovery_state.py
+    audit.py
+  eval/
+    cases/
+    runner.py
+    metrics.py
+  ui/
+  tests/
+  docs/</pre>
+<h2>4. Definition of Done — P0</h2>
+<ul>
+<li>At least one successful recovery case, one No Action case, and one HITL case work end-to-end.</li>
+<li>All critical adversarial tests pass.</li>
+<li>Financial outputs are deterministic and reproducible.</li>
+<li>Duplicate/unknown execution behavior is verified.</li>
+<li>Every outcome produces an auditable trace.</li>
+<li>Demo can run from a clean environment with known test data.</li>
+</ul>
+<h2>5. Scope Control</h2>
+<p>Do not add live writes, live telephony, extra agent frameworks, A2A, GraphRAG, production Kubernetes, or enterprise IAM unless P0 and demo are already complete.</p>
+
+
+    <div class="footer">RevGuard • Static documentation site • Designed for browser viewing and PDF export</div>
+  </main>
+</div>
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>

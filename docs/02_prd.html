@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="RevGuard — Autonomous Revenue Leakage Investigation & Recovery">
+<title>PRD · RevGuard</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<div class="mobile-header"><strong>RevGuard</strong><button class="button" onclick="toggleNav()">Menu</button></div>
+<div class="site-shell">
+
+    <aside class="sidebar">
+      <div class="brand">RevGuard</div>
+      <div class="brand-sub">Autonomous Revenue Leakage Investigation & Recovery</div>
+      <div class="nav-section">Documentation</div>
+      <nav><a class="" href="../index.html">Overview</a><a class="" href="../docs/01_scope.html">Scope</a><a class="active" href="../docs/02_prd.html">PRD</a><a class="" href="../docs/03_architecture.html">Architecture</a><a class="" href="../docs/04_evaluation_safety.html">Evaluation & Safety</a><a class="" href="../docs/05_implementation_plan.html">Implementation Plan</a><a class="" href="../docs/06_demo_submission.html">Demo & Submission</a><a class="" href="../docs/07_evidence_data_spec.html">Evidence & Data</a><a class="" href="../docs/08_architecture_decisions.html">Architecture Decisions</a></nav>
+      <div class="sidebar-footer">Hackathon & portfolio documentation<br>Static site • GitHub Pages ready</div>
+    </aside>
+    
+<div class="content">
+  <div class="topbar">
+    <div class="topbar-title">PRD</div>
+    <div class="topbar-actions">
+      <a class="button" href="../index.html">Overview</a>
+      <button class="button" onclick="printPage()">Print / PDF</button>
+    </div>
+  </div>
+  <main>
+    <h1>PRD</h1><div class="subtitle">Concise PRD for the hackathon MVP and portfolio</div>
+<h2>1. Product Summary</h2>
+<p>RevGuard investigates potential revenue leakage across contracts, usage, billing, CRM, approvals, and optionally recorded commercial conversations. It is designed for ambiguous cases where the discrepancy is visible but the root cause is not.</p>
+<div class="callout"><strong>Product promise:</strong> move from “possible leakage detected” to a traceable, evidence-backed decision without allowing an LLM to directly authorize or execute a financial action.</div>
+<h2>2. Problem</h2>
+<p>Revenue leakage can result from incorrect pricing, missed rate changes, unbilled usage, outdated terms, unauthorized credits, expired concessions, billing-period errors, telemetry anomalies, or conflicting commercial records. Fixed SQL rules work when the discrepancy and resolution path are already known; RevGuard targets ambiguous cases requiring cross-source investigation.</p>
+<h2>3. Primary User</h2>
+<p>Finance, billing operations, revenue assurance, commercial operations, and audit teams investigating potentially incorrect customer billing.</p>
+<h2>4. Core User Journey</h2>
+<ol>
+<li>A discrepancy case is created or detected.</li>
+<li>Jev classifies the case and selects an investigation route; unsupported cases fall back safely.</li>
+<li>The Coordinator gathers evidence through typed MCP tools.</li>
+<li>Agents generate and test hypotheses across systems.</li>
+<li>Deterministic verification confirms evidence provenance and sufficiency.</li>
+<li>The financial engine calculates exposure from verified inputs only.</li>
+<li>Policy and authorization determine No Action, HITL, or sandbox recovery.</li>
+<li>The outcome is verified and written to the audit trail.</li>
+</ol>
+<h2>5. Functional Requirements</h2>
+<table><tr><th>ID</th><th>Requirement</th></tr>
+<tr><td>FR-1</td><td>Accept a discrepancy case with customer, period, scenario, and available source references.</td></tr>
+<tr><td>FR-2</td><td>Route/classify using Jev; fallback to a conservative generative path on malformed, unsupported, or unavailable output.</td></tr>
+<tr><td>FR-3</td><td>Retrieve evidence only through typed, permission-aware MCP tools.</td></tr>
+<tr><td>FR-4</td><td>Maintain durable investigation state, budgets, hypotheses, evidence, and termination status.</td></tr>
+<tr><td>FR-5</td><td>Verify evidence independently and distinguish provenance from source authority.</td></tr>
+<tr><td>FR-6</td><td>Calculate leakage and recovery deterministically.</td></tr>
+<tr><td>FR-7</td><td>Fail closed when evidence is insufficient/conflicting or policy conditions are not met.</td></tr>
+<tr><td>FR-8</td><td>Support HITL with an evidence package, financial impact, alternatives, and escalation reason.</td></tr>
+<tr><td>FR-9</td><td>Use idempotent sandbox recovery and reconcile unknown execution states before retrying.</td></tr>
+<tr><td>FR-10</td><td>Audit decisions, tool use, evidence, policy, execution, and non-actions.</td></tr></table>
+<h2>6. Representative Scenarios</h2>
+<table><tr><th>Scenario</th><th>Likely Outcome</th></tr>
+<tr><td>Incorrect contract rate</td><td>Recovery if evidence is sufficient and policy passes</td></tr>
+<tr><td>Missed usage</td><td>Recovery if authoritative telemetry confirms underbilling</td></tr>
+<tr><td>Expired concession</td><td>Recovery or HITL depending on approval evidence</td></tr>
+<tr><td>Approved commercial exception</td><td>No Action</td></tr>
+<tr><td>Telemetry anomaly</td><td>No Action or HITL</td></tr>
+<tr><td>Conflicting amendment</td><td>HITL_REQUIRED</td></tr>
+<tr><td>Open dispute</td><td>HITL_REQUIRED</td></tr>
+<tr><td>Insufficient evidence</td><td>HITL_REQUIRED / INSUFFICIENT_EVIDENCE</td></tr></table>
+<h2>7. P1 Conversational Evidence</h2>
+<p>A small number of synthetic pre-recorded calls may be processed with ASR + diarization. The resulting speaker-attributed transcript becomes a standard <code>EvidenceItem</code>. A verified statement proves what was said; it does not automatically prove the speaker had commercial authority.</p>
+<h2>8. Non-Functional Requirements</h2>
+<ul><li>Bounded execution via tool/iteration/token/time budgets.</li><li>Typed schemas and structured outputs.</li><li>Least-privilege tool permissions.</li><li>Deterministic money calculations.</li><li>Reproducible benchmark dataset and measurable outcomes.</li><li>Complete auditability without storing private chain-of-thought.</li></ul>
+<h2>9. MVP Exit Criteria</h2>
+<p>P0 is complete when the happy path plus missing evidence, conflicting evidence, tool failure, duplicate recovery, unknown execution, policy block, budget exhaustion, and audit-integrity scenarios all behave as specified.</p>
+
+
+    <div class="footer">RevGuard • Static documentation site • Designed for browser viewing and PDF export</div>
+  </main>
+</div>
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>
