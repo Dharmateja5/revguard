@@ -1,101 +1,24 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="RevGuard — Autonomous Revenue Leakage Investigation & Recovery">
-<title>Evidence &amp; Data · RevGuard</title>
-<link rel="stylesheet" href="../assets/styles.css">
-</head>
-<body>
-<div class="mobile-header"><strong>RevGuard</strong><button class="button" onclick="toggleNav()">Menu</button></div>
-<div class="site-shell">
-
-    <aside class="sidebar">
-      <div class="brand">RevGuard</div>
-      <div class="brand-sub">Autonomous Revenue Leakage Investigation & Recovery</div>
-      <div class="nav-section">Documentation</div>
-      <nav><a class="" href="../index.html">Overview</a><a class="" href="../docs/01_scope.html">Scope</a><a class="" href="../docs/02_prd.html">PRD</a><a class="" href="../docs/03_architecture.html">Architecture</a><a class="" href="../docs/04_evaluation_safety.html">Evaluation & Safety</a><a class="" href="../docs/05_implementation_plan.html">Implementation Plan</a><a class="" href="../docs/06_demo_submission.html">Demo & Submission</a><a class="active" href="../docs/07_evidence_data_spec.html">Evidence & Data</a><a class="" href="../docs/08_architecture_decisions.html">Architecture Decisions</a></nav>
-      <div class="sidebar-footer">Hackathon & portfolio documentation<br>Static site • GitHub Pages ready</div>
-    </aside>
-    
-<div class="content">
-  <div class="topbar">
-    <div class="topbar-title">Evidence &amp; Data</div>
-    <div class="topbar-actions">
-      <a class="button" href="../index.html">Overview</a>
-      <button class="button" onclick="printPage()">Print / PDF</button>
-    </div>
-  </div>
-  <main>
-    <h1>Evidence &amp; Data</h1><div class="subtitle">Synthetic data, evidence contracts, source authority, and benchmark design</div>
-<h2>1. Purpose</h2>
-<p>Define the synthetic enterprise dataset and evidence contracts used by agents, MCP tools, deterministic controls, and evaluation.</p>
-<h2>2. Source Domains</h2>
-<table><tr><th>Domain</th><th>Example Data</th><th>Authority</th></tr>
-<tr><td>Contract</td><td>Master contract, amendments, pricing schedules, effective dates</td><td>Authoritative for commercial entitlement when executed/current</td></tr>
-<tr><td>Usage</td><td>Metered units, telemetry health, usage summaries</td><td>Authoritative for measured usage when source passes health checks</td></tr>
-<tr><td>Billing</td><td>Invoices, lines, credits, billing history</td><td>Authoritative for billed amounts</td></tr>
-<tr><td>CRM / Approval</td><td>Notes, approved exceptions, disputes, account metadata</td><td>Approval system authoritative for commercial exception approval</td></tr>
-<tr><td>Conversation (P1)</td><td>Recorded customer/account-team calls</td><td>Evidence of what was said; not automatically authoritative for contract change</td></tr>
-<tr><td>Recovery</td><td>Sandbox recovery requests and statuses</td><td>Authoritative for recovery execution state</td></tr></table>
-<h2>3. Core Evidence Schema</h2>
-<pre>{
-  evidence_id,
-  source_type,
-  source_locator,
-  source_version,
-  snapshot_id,
-  retrieved_at,
-  extracted_claim,
-  citation_span,
-  effective_date,
-  verification_method,
-  verification_status
-}</pre>
-<p><code>verification_status ∈ {VERIFIED, MISMATCH, UNVERIFIABLE}</code></p>
-<h2>4. Case-Level Evidence Status</h2>
-<p><code>SUFFICIENT</code>, <code>INSUFFICIENT</code>, <code>CONFLICTING</code>, or <code>UNAVAILABLE</code>.</p>
-<h2>5. Synthetic Dataset Minimum</h2>
-<table><tr><th>Asset</th><th>Minimum</th></tr>
-<tr><td>Customers</td><td>10–20</td></tr>
-<tr><td>Contracts / amendments</td><td>15–30 mixed valid/expired/conflicting records</td></tr>
-<tr><td>Invoices / invoice lines</td><td>Several periods per customer</td></tr>
-<tr><td>Usage records</td><td>Enough to support normal, missing, and anomalous scenarios</td></tr>
-<tr><td>CRM approvals / disputes</td><td>Approved, missing, expired, and disputed cases</td></tr>
-<tr><td>Ground-truth benchmark</td><td>At least 12–20 cases spanning recovery, no-action, HITL, and failure paths</td></tr>
-<tr><td>Recorded calls (P1)</td><td>1–3 synthetic recordings</td></tr></table>
-<h2>6. Recommended Benchmark Mix</h2>
-<ul>
-<li>Incorrect rate</li>
-<li>Missed usage</li>
-<li>Expired concession</li>
-<li>Approved exception</li>
-<li>Telemetry anomaly</li>
-<li>Conflicting amendment</li>
-<li>Open dispute</li>
-<li>Missing critical evidence</li>
-<li>Duplicate recovery attempt</li>
-<li>Unknown execution/reconciliation</li>
-<li>Voice contradiction (P1)</li>
-</ul>
-<h2>7. Voice Evidence Representation</h2>
-<pre>{
-  call_id: "CALL-0042",
-  recording_id: "REC-0042",
-  speaker_id: "speaker_1",
-  participant_role: "ACCOUNT_MANAGER",
-  start_sec: 42.1,
-  end_sec: 48.7,
-  text: "We'll continue the 15% discount through September..."
-}</pre>
-<p>The <code>participant_role</code> should come from call metadata or controlled synthetic setup. Diarization identifies speaker segments, not real-world identity or authority.</p>
-
-
-    <div class="footer">RevGuard • Static documentation site • Designed for browser viewing and PDF export</div>
-  </main>
-</div>
-</div>
-<script src="../assets/app.js"></script>
-</body>
-</html>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Evidence & Data</title><link rel="stylesheet" href="../style.css"></head><body><div class="wrap"><div class="top"><div class="brand"><a href="../index.html">Supplier Exception Resolution</a></div></div><div class="kicker">07 — Evidence & Data</div><h1>Evidence & Synthetic Data Specification</h1><h2>Core Synthetic Tables</h2><pre>suppliers
+materials
+purchase_orders
+purchase_order_lines
+supplier_commitments
+inventory_snapshots
+material_demand
+open_receipts
+alternate_suppliers
+freight_options
+supplier_qualifications
+approvals
+recovery_actions
+benchmark_cases</pre><h2>Unstructured Evidence</h2><ul><li>Supplier emails announcing shortfall, delay, expedite option, or revised commitment.</li><li>Buyer notes.</li><li>Quality / exception notes for P1.</li></ul><h2>EvidenceItem</h2><pre>evidence_id
+source_type
+source_locator
+snapshot_or_version
+retrieved_at
+claim
+citation_span
+business_effective_time
+verification_method
+verification_status
+source_authority</pre><h2>Authority Model</h2><table><tr><th>Claim</th><th>Authoritative source</th></tr><tr><td>Original ordered quantity/date</td><td>Purchase order</td></tr><tr><td>Latest supplier commitment</td><td>Verified supplier communication / commitment record</td></tr><tr><td>On-hand inventory</td><td>Inventory snapshot</td></tr><tr><td>Production need</td><td>Demand / production requirement table</td></tr><tr><td>Supplier qualification</td><td>Supplier qualification master</td></tr><tr><td>Approval threshold</td><td>Policy / approval configuration</td></tr><tr><td>Execution result</td><td>Recovery action store / sandbox ERP</td></tr></table><h2>Benchmark Design</h2><p>Recommended 15 cases:</p><ul><li>3 straightforward partial-delivery cases.</li><li>3 cases requiring alternate supplier search.</li><li>2 cases where expedite is optimal.</li><li>2 cases where no intervention is needed.</li><li>2 HITL cases due to spend threshold or ambiguity.</li><li>1 policy-blocked unqualified supplier.</li><li>1 duplicate-trigger/idempotency case.</li><li>1 unknown-execution/reconciliation case.</li></ul><h2>Ground Truth</h2><p>Each case should specify known facts, valid recovery-action set, forbidden actions, expected shortage before/after, required evidence, expected HITL outcome, and allowed termination states.</p></div></body></html>
